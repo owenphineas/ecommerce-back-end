@@ -69,15 +69,19 @@ router.put('/:id', async (req, res) => {
 // Delete a category by its `id` value
 router.delete('/:id', async (req, res) => {
   try {
-    const categoryData = await Category.destroy({
-      where: {
-        id: req.params.id,
-      },
-    });
+    // Find products belonging to that category and set their category_id to null
+    const childProducts = await Product.findAll({ where: { category_id: req.params.id } });    
+    for (const product of childProducts) {
+      product.category_id = null;
+      await product.save();
+    }
+
+    const categoryData = await Category.destroy({ where: { id: req.params.id } });
     res.status(200).json(categoryData);
+
   } catch (err) {
-    res.status(500).json(err);
-  }
+      res.status(500).json(err);
+  };
 });
 
 module.exports = router;
