@@ -4,9 +4,9 @@ const { Tag, Product, ProductTag } = require('../../models');
 // The `/api/tags` endpoint
 
 // Find all tags
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
   try {
-    const tagData = Tag.findAll({
+    const tagData = await Tag.findAll({
       include: [{ model: Product }],
     });
     res.status(200).json(tagData);
@@ -16,9 +16,9 @@ router.get('/', (req, res) => {
 });
 
 // Find a single tag by its `id`
-router.get('/:id', (req, res) => {
+router.get('/:id', async (req, res) => {
   try {
-    const tagData = Tag.findAll(req.params.id, {
+    const tagData =  await Tag.findByPk(req.params.id, {
       include: [{ model: Product }],
     });
 
@@ -35,9 +35,9 @@ router.get('/:id', (req, res) => {
 });
 
 // Create a new tag
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   try {
-    const newTag = Tag.create(req.body, {
+    const newTag = await Tag.create(req.body, {
       tag_name: req.body.tag_name,
     });
     res.status(200).json(newTag);
@@ -47,9 +47,9 @@ router.post('/', (req, res) => {
 });
 
 // Update a tag's name by its `id` value
-router.put('/:id', (req, res) => {
+router.put('/:id', async (req, res) => {
   try {
-    const tagData = Tag.update(
+    const tagData = await Tag.update(
       {
         tag_name: req.body.category_name,
       },
@@ -66,9 +66,9 @@ router.put('/:id', (req, res) => {
 });
 
 // Delete on tag by its `id` value
-router.delete('/:id', (req, res) => {
+router.delete('/:id', async (req, res) => {
   try {
-    const tagData = Tag.destroy({
+    const tagData = await Tag.destroy({
       where: {
         id: req.params.id,
       },
